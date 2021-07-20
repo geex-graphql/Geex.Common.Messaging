@@ -25,7 +25,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
             return true;
         }
         /// <summary>
-        /// 标记消息已读
+        /// 删除消息分配
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -37,7 +37,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
             return true;
         }
         /// <summary>
-        ///
+        /// 发送消息
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
