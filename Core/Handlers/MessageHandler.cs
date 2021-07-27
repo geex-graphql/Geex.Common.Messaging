@@ -86,7 +86,7 @@ namespace Geex.Common.Messaging.Core.Handlers
         public async Task<IMessage> Handle(CreateMessageRequest request, CancellationToken cancellationToken)
         {
             var message = new Message(request.Text, request.Severity);
-            DbContext.AttachContextSession(message);
+            DbContext.Attach(message);
             await message.SaveAsync(cancellation: cancellationToken);
             return message;
         }

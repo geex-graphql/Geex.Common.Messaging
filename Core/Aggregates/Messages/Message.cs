@@ -66,7 +66,7 @@ namespace Geex.Common.Messaging.Core.Aggregates.Messages
             }
 
             var distributions = userIds.Select(x => new MessageDistribution(this.Id, x)).ToList();
-            await distributions.SaveAsync((this as IEntity).Session);
+            await distributions.SaveAsync((this as IEntity).DbContext?.Session);
             await this.Distributions.AddAsync(distributions);
 
             return this;
