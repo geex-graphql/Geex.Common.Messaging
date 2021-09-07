@@ -19,6 +19,6 @@ namespace Geex.Common.Messaging.Api.Aggregates.Messages
         string Id { get; }
         MessageSeverityType Severity { get; set; }
         public string Title { get; }
-        public DateTime Time { get; }
+        public DateTimeOffset Time { get; }
     }
 }

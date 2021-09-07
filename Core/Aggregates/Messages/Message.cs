@@ -43,7 +43,7 @@ namespace Geex.Common.Messaging.Core.Aggregates.Messages
         public virtual Many<MessageDistribution> Distributions { get; set; }
         public string? FromUserId { get; private set; }
         public string Title { get; set; }
-        public DateTime Time => CreatedOn;
+        public DateTimeOffset Time => CreatedOn;
 
         public MessageType MessageType { get; set; }
         public IMessageContent Content { get; private set; }
