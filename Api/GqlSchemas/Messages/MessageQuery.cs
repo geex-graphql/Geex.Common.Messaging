@@ -20,7 +20,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
     {
         protected override void Configure(IObjectTypeDescriptor<MessageQuery> descriptor)
         {
-            descriptor.ResolveMethod(x => x.Messages(default))
+            descriptor.ConfigQuery(x => x.Messages(default))
             .UseOffsetPaging<MessageGqlType>()
             .UseFiltering<IMessage>(x =>
             {
