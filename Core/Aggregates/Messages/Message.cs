@@ -8,14 +8,14 @@ using Geex.Common.Messaging.Api.Aggregates.Messages;
 using KuanFang.Rms.MessageManagement.Messages;
 using Microsoft.Extensions.Logging;
 using MongoDB.Entities;
-using Entity = Geex.Common.Abstractions.Entity;
+using Entity = Geex.Common.Abstraction.Storage.Entity;
 
 namespace Geex.Common.Messaging.Core.Aggregates.Messages
 {
     /// <summary>
     /// this is a aggregate root of this module, we name it the same as the module feel free to change it to its real name
     /// </summary>
-    public partial class Message : Entity, IMessage
+    public partial class Message : Abstraction.Storage.Entity, IMessage
     {
         private ILogger<Message> Logger => ServiceLocator.Current.GetService<ILogger<Message>>();
         protected Message()
