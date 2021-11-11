@@ -16,7 +16,6 @@ namespace Geex.Common.Messaging.Api.Aggregates.Messages
         public MessageType MessageType { get; }
         public IMessageContent Content { get; }
         IList<string> ToUserIds { get; }
-        string Id { get; }
         MessageSeverityType Severity { get; set; }
         public string Title { get; }
         public DateTimeOffset Time { get; }
