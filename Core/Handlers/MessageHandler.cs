@@ -66,9 +66,9 @@ namespace Geex.Common.Messaging.Core.Handlers
 
         public async Task<IEnumerable<IMessage>> Handle(GetUnreadMessagesInput request, CancellationToken cancellationToken)
         {
-            var messageDistributions = await DbContext.Find<MessageDistribution>().Match(x => x.IsRead == false && x.ToUserId == ClaimsPrincipal.FindUserId()).ExecuteAsync(cancellationToken);
+            var messageDistributions = DbContext.Queryable<MessageDistribution>().Where(x => x.IsRead == false && x.ToUserId == ClaimsPrincipal.FindUserId()).ToList();
             var messageIds = messageDistributions.Select(x => x.MessageId);
-            var messages = await DbContext.Find<Message>().ManyAsync(x => messageIds.Contains(x.Id), cancellationToken);
+            var messages = DbContext.Queryable<Message>().Where(x => messageIds.Contains(x.Id)).ToList();
             return messages;
         }
 
@@ -93,7 +93,7 @@ namespace Geex.Common.Messaging.Core.Handlers
 
         public async Task<Unit> Handle(EditMessageRequest request, CancellationToken cancellationToken)
         {
-            var message = await DbContext.Find<Message>().MatchId(request.Id).ExecuteSingleAsync();
+            var message = await DbContext.Queryable<Message>().OneAsync(request.Id);
             if (!request.Text.IsNullOrEmpty())
             {
                 message.Title = request.Text;
