@@ -14,9 +14,9 @@ using MongoDB.Bson.Serialization;
 
 namespace Geex.Common.Messaging.Core.EntityMapConfigs
 {
-    public class MessageMapConfig : EntityMapConfig<Message>
+    public class MessageMapConfig : IEntityMapConfig<Message>
     {
-        public override void Map(BsonClassMap<Message> map)
+        public void Map(BsonClassMap<Message> map)
         {
             map.AutoMap();
             BsonClassMap.RegisterClassMap<InteractContent>();
