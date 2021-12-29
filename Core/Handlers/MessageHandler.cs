@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Geex.Common.Abstraction.Entities;
 using Geex.Common.Abstraction.Gql.Inputs;
 using Geex.Common.Abstractions;
 using Geex.Common.Messaging.Api.Aggregates.FrontendCalls;
@@ -27,7 +28,7 @@ using MongoDB.Entities;
 namespace Geex.Common.Messaging.Core.Handlers
 {
     public class MessageHandler :
-        IRequestHandler<QueryInput<IMessage>, IQueryable<IMessage>>,
+        ICommonHandler<IMessage, Message>,
         IRequestHandler<DeleteMessageDistributionsInput, Unit>,
         IRequestHandler<MarkMessagesReadInput, Unit>,
         IRequestHandler<SendNotificationMessageRequest, Unit>,
@@ -36,20 +37,14 @@ namespace Geex.Common.Messaging.Core.Handlers
     IRequestHandler<GetUnreadMessagesInput, IEnumerable<IMessage>>
     {
         public DbContext DbContext { get; }
-        public ClaimsPrincipal ClaimsPrincipal { get; }
+        public LazyFactory<ClaimsPrincipal> ClaimsPrincipal { get; }
         public LazyFactory<ITopicEventSender> Sender { get; }
 
-        public MessageHandler(DbContext dbContext, ClaimsPrincipal claimsPrincipal, LazyFactory<ITopicEventSender> sender)
+        public MessageHandler(DbContext dbContext, LazyFactory<ClaimsPrincipal> claimsPrincipal, LazyFactory<ITopicEventSender> sender)
         {
             DbContext = dbContext;
-            ClaimsPrincipal = claimsPrincipal;
+            this.ClaimsPrincipal = claimsPrincipal;
             Sender = sender;
-        }
-
-        public async Task<IQueryable<IMessage>> Handle(QueryInput<IMessage> input,
-            CancellationToken cancellationToken)
-        {
-            return DbContext.Queryable<Message>();
         }
 
         public async Task<Unit> Handle(DeleteMessageDistributionsInput request, CancellationToken cancellationToken)
@@ -66,7 +61,8 @@ namespace Geex.Common.Messaging.Core.Handlers
 
         public async Task<IEnumerable<IMessage>> Handle(GetUnreadMessagesInput request, CancellationToken cancellationToken)
         {
-            var messageDistributions = DbContext.Queryable<MessageDistribution>().Where(x => x.IsRead == false && x.ToUserId == ClaimsPrincipal.FindUserId()).ToList();
+            var claimsPrincipal = ClaimsPrincipal.Value;
+            var messageDistributions = DbContext.Queryable<MessageDistribution>().Where(x => x.IsRead == false && x.ToUserId == claimsPrincipal.FindUserId()).ToList();
             var messageIds = messageDistributions.Select(x => x.MessageId);
             var messages = DbContext.Queryable<Message>().Where(x => messageIds.Contains(x.Id)).ToList();
             return messages;
@@ -78,7 +74,8 @@ namespace Geex.Common.Messaging.Core.Handlers
             await message.DistributeAsync(request.ToUserIds.ToArray());
             await message.SaveAsync(cancellation: cancellationToken);
 
-            await Sender.Value.SendAsync(ClaimsPrincipal.FindUserId(), new FrontendCall(FrontendCallType.NewMessage, new { message.Content, message.FromUserId, message.MessageType, message.Severity }) as IFrontendCall
+            var claimsPrincipal = ClaimsPrincipal.Value;
+            await Sender.Value.SendAsync(claimsPrincipal.FindUserId(), new FrontendCall(FrontendCallType.NewMessage, new { message.Content, message.FromUserId, message.MessageType, message.Severity }) as IFrontendCall
            , cancellationToken);
             return Unit.Value;
         }
