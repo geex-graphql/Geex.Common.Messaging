@@ -72,11 +72,12 @@ namespace Geex.Common.Messaging.Core.Handlers
         {
             var message = DbContext.Queryable<Message>().First(x => x.Id == request.MessageId);
             await message.DistributeAsync(request.ToUserIds.ToArray());
-            await message.SaveAsync(cancellation: cancellationToken);
 
-            var claimsPrincipal = ClaimsPrincipal.Value;
-            await Sender.Value.SendAsync(claimsPrincipal.FindUserId(), new FrontendCall(FrontendCallType.NewMessage, new { message.Content, message.FromUserId, message.MessageType, message.Severity }) as IFrontendCall
-           , cancellationToken);
+            foreach (var toUserId in request.ToUserIds)
+            {
+                await Sender.Value.SendAsync<string, IFrontendCall>($"{nameof(MessageSubscription.OnFrontendCall)}:{toUserId}", new FrontendCall(FrontendCallType.NewMessage, new { message.Content, message.FromUserId, message.MessageType, message.Severity }), cancellationToken);
+            }
+
             return Unit.Value;
         }
 

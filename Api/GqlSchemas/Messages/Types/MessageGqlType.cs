@@ -19,6 +19,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages.Types
             descriptor.Field(x => x.Title);
             descriptor.Field(x => x.Time);
             descriptor.Field(x => x.Severity);
+            descriptor.IgnoreMethods();
             descriptor.Implements<InterfaceType<IMessage>>();
             base.Configure(descriptor);
         }

@@ -21,7 +21,6 @@ namespace Geex.Common.Messaging.Core.EntityMapConfigs
             map.AutoMap();
             BsonClassMap.RegisterClassMap<InteractContent>();
             BsonClassMap.RegisterClassMap<ToDoContent>();
-            map.UnmapField(x=>x.Distributions);
         }
     }
 }

@@ -13,14 +13,13 @@ using Entity = Geex.Common.Abstraction.Storage.Entity;
 namespace Geex.Common.Messaging.Core.Aggregates.Messages
 {
     /// <summary>
-    /// this is a aggregate root of this module, we name it the same as the module feel free to change it to its real name
+    /// 普通message
     /// </summary>
-    public partial class Message : Abstraction.Storage.Entity, IMessage
+    public class Message : Entity, IMessage
     {
-        private ILogger<Message> Logger => ServiceLocator.Current.GetService<ILogger<Message>>();
+        private ILogger<Message> Logger => ServiceProvider.GetService<ILogger<Message>>();
         protected Message()
         {
-            this.InitOneToMany((x) => x.Distributions);
         }
         public Message(string text, MessageSeverityType severity = MessageSeverityType.Info)
         : this()
@@ -39,9 +38,9 @@ namespace Geex.Common.Messaging.Core.Aggregates.Messages
                 _ => MessageType.Notification
             };
         }
-        [OwnerSide]
-        public virtual Many<MessageDistribution> Distributions { get; set; }
+        public virtual IQueryable<MessageDistribution> Distributions => DbContext.Queryable<MessageDistribution>().Where(x => x.MessageId == this.Id);
         public string? FromUserId { get; private set; }
+        public IList<string> ToUserIds => this.Distributions.ToList().Select(x => x.ToUserId).ToList();
         public string Title { get; set; }
         public DateTimeOffset Time => CreatedOn;
 
@@ -50,24 +49,13 @@ namespace Geex.Common.Messaging.Core.Aggregates.Messages
         public MessageSeverityType Severity { get; set; }
         public async Task<Message> DistributeAsync(params string[] userIds)
         {
-            if (this.Distributions == default)
-            {
-                this.InitOneToMany(x => x.Distributions);
-            }
-
-            if (!this.Id.IsNullOrEmpty())
-            {
-                await this.SaveAsync();
-            }
-
             if (this.Distributions.Any())
             {
-                throw new NotSupportedException("消息已经被分配");
+                return this;
             }
 
             var distributions = userIds.Select(x => new MessageDistribution(this.Id, x)).ToList();
-            await distributions.SaveAsync((this as IEntity).DbContext?.Session);
-            await this.Distributions.AddAsync(distributions);
+            DbContext.Attach(distributions);
 
             return this;
         }
@@ -88,12 +76,5 @@ namespace Geex.Common.Messaging.Core.Aggregates.Messages
                 Logger.LogWarning("试图标记不存在的消息分配记录已读.");
             }
         }
-    }
-
-    public partial class Message
-    {
-
-
-        public IList<string> ToUserIds => this.Distributions.ToList().Select(x => x.ToUserId).ToList();
     }
 }
