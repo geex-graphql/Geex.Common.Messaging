@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
+using Geex.Common.Abstraction.Gql.Types;
 using Geex.Common.Messaging.Api.Aggregates.Messages;
 using Geex.Common.Messaging.Api.Aggregates.Messages.Inputs;
-using Geex.Common.Gql.Roots;
 using HotChocolate;
 using HotChocolate.Subscriptions;
 using HotChocolate.Types;
@@ -10,7 +10,7 @@ using MongoDB.Entities;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageMutation : MutationTypeExtension<MessageMutation>
+    public class MessageMutation : Mutation<MessageMutation>
     {
         /// <summary>
         /// 标记消息已读

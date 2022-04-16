@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Geex.Common.Abstraction.Gql.Inputs;
+using Geex.Common.Abstraction.Gql.Types;
 using Geex.Common.Messaging.Api.Aggregates.Messages;
 using Geex.Common.Messaging.Api.Aggregates.Messages.Inputs;
-using Geex.Common.Gql.Roots;
 using Geex.Common.Messaging.Api.GqlSchemas.Messages.Types;
 using HotChocolate;
 using HotChocolate.Language;
@@ -16,7 +16,7 @@ using MongoDB.Entities;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageQuery : QueryTypeExtension<MessageQuery>
+    public class MessageQuery : Query<MessageQuery>
     {
         protected override void Configure(IObjectTypeDescriptor<MessageQuery> descriptor)
         {

@@ -11,7 +11,7 @@ namespace Geex.Common.Messaging.Core.Migrations
 {
     //public class __init : IMigration
     //{
-    //    public async Task UpgradeAsync(DbContext dbContext)
+    //    public override async Task UpgradeAsync(DbContext dbContext)
     //    {
     //        var MessageEntity = new Message()
     //        {

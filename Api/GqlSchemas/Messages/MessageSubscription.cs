@@ -1,8 +1,8 @@
 using System.Security;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Geex.Common.Abstraction.Gql.Types;
 using Geex.Common.Abstractions;
-using Geex.Common.Gql.Roots;
 using Geex.Common.Messaging.Api.Aggregates.FrontendCalls;
 using Geex.Common.Messaging.Api.Aggregates.Messages;
 using Geex.Common.Messaging.Core.Aggregates.FrontendCalls;
@@ -15,7 +15,7 @@ using HotChocolate.Types;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageSubscription : SubscriptionTypeExtension<MessageSubscription>
+    public class MessageSubscription : Subscription<MessageSubscription>
     {
         /// <summary>
         /// 订阅服务器对单个用户的前端调用
