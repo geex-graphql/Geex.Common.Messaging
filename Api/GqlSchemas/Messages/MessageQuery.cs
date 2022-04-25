@@ -16,11 +16,18 @@ using MongoDB.Entities;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageQuery : Query<MessageQuery>
+    public class MessageQuery : QueryExtension<MessageQuery>
     {
+        private readonly IMediator _mediator;
+
+        public MessageQuery(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
+
         protected override void Configure(IObjectTypeDescriptor<MessageQuery> descriptor)
         {
-            descriptor.ConfigQuery(x => x.Messages(default))
+            descriptor.Field(x => x.Messages())
             .UseOffsetPaging<MessageGqlType>()
             .UseFiltering<IMessage>(x =>
             {
@@ -36,10 +43,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<IQueryable<IMessage>> Messages(
-            [Service] IMediator Mediator)
+        public async Task<IQueryable<IMessage>> Messages()
         {
-            var result = await Mediator.Send(new QueryInput<IMessage>());
+            var result = await this._mediator.Send(new QueryInput<IMessage>());
             return result;
         }
 
@@ -49,10 +55,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="dto"></param>
         /// <returns></returns>
         public async Task<IQueryable<IMessage>> UnreadMessages(
-            [Service] IMediator Mediator,
             GetUnreadMessagesInput input)
         {
-            var result = await Mediator.Send(input);
+            var result = await _mediator.Send(input);
             return result;
         }
     }

@@ -10,18 +10,24 @@ using MongoDB.Entities;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageMutation : Mutation<MessageMutation>
+    public class MessageMutation : MutationExtension<MessageMutation>
     {
+        private readonly IMediator _mediator;
+
+        public MessageMutation(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
+
         /// <summary>
         /// 标记消息已读
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<bool> MarkMessagesRead(
-            [Service] IMediator Mediator,
             MarkMessagesReadInput input)
         {
-            var result = await Mediator.Send(input);
+            var result = await this._mediator.Send(input);
             return true;
         }
         /// <summary>
@@ -30,10 +36,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<bool> DeleteMessageDistributions(
-            [Service] IMediator Mediator,
             DeleteMessageDistributionsInput input)
         {
-            var result = await Mediator.Send(input);
+            var result = await _mediator.Send(input);
             return true;
         }
         /// <summary>
@@ -42,10 +47,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<bool> SendMessage(
-            [Service] IMediator Mediator,
             SendNotificationMessageRequest input)
         {
-            var result = await Mediator.Send(input);
+            var result = await _mediator.Send(input);
             return true;
         }
 
@@ -55,10 +59,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<IMessage> CreateMessage(
-            [Service] IMediator Mediator,
             CreateMessageRequest input)
         {
-            var result = await Mediator.Send(input);
+            var result = await _mediator.Send(input);
             return result;
         }
 
@@ -68,10 +71,9 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<bool> EditMessage(
-            [Service] IMediator Mediator,
             EditMessageRequest input)
         {
-            var result = await Mediator.Send(input);
+            var result = await _mediator.Send(input);
             return true;
         }
 

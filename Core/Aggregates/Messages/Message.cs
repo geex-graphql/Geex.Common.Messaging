@@ -52,7 +52,7 @@ public class Message : Entity, IMessage
     public DateTimeOffset Time => CreatedOn;
     public string Title { get; set; }
     public IList<string> ToUserIds => Distributions.ToList().Select(x => x.ToUserId).ToList();
-    public string? TenantCode { get; protected set; }
+    public string? TenantCode { get; set; }
 
     public async Task<Message> DistributeAsync(params string[] userIds)
     {

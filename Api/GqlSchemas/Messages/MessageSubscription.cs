@@ -15,7 +15,7 @@ using HotChocolate.Types;
 
 namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
 {
-    public class MessageSubscription : Subscription<MessageSubscription>
+    public class MessageSubscription : SubscriptionExtension<MessageSubscription>
     {
         /// <summary>
         /// 订阅服务器对单个用户的前端调用
