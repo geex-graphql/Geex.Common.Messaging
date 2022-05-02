@@ -24,7 +24,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         /// <param name="claimsPrincipal"></param>
         /// <returns></returns>
         [SubscribeAndResolve]
-        public ValueTask<ISourceStream<IFrontendCall>> OnFrontendCall([Service] ITopicEventReceiver receiver, [Service] LazyFactory<ClaimsPrincipal> claimsPrincipal)
+        public ValueTask<ISourceStream<IFrontendCall>> OnFrontendCall([Service] ITopicEventReceiver receiver, [Service] LazyService<ClaimsPrincipal> claimsPrincipal)
         {
             return receiver.SubscribeAsync<string, IFrontendCall>($"{nameof(OnFrontendCall)}:{claimsPrincipal.Value?.FindUserId()}");
         }

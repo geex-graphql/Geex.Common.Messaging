@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Geex.Common.Abstraction.MultiTenant;
 using Geex.Common.Abstraction.Storage;
@@ -76,4 +78,8 @@ public class Message : Entity, IMessage
         else
             Logger.LogWarning("试图标记不存在的消息分配记录已读.");
     }
+    public override async Task<ValidationResult> Validate(IServiceProvider sp, CancellationToken cancellation = default)
+        {
+            return ValidationResult.Success;
+        }
 }

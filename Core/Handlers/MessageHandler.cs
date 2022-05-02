@@ -37,10 +37,10 @@ namespace Geex.Common.Messaging.Core.Handlers
     IRequestHandler<GetUnreadMessagesInput, IEnumerable<IMessage>>
     {
         public DbContext DbContext { get; }
-        public LazyFactory<ClaimsPrincipal> ClaimsPrincipal { get; }
-        public LazyFactory<ITopicEventSender> Sender { get; }
+        public LazyService<ClaimsPrincipal> ClaimsPrincipal { get; }
+        public LazyService<ITopicEventSender> Sender { get; }
 
-        public MessageHandler(DbContext dbContext, LazyFactory<ClaimsPrincipal> claimsPrincipal, LazyFactory<ITopicEventSender> sender)
+        public MessageHandler(DbContext dbContext, LazyService<ClaimsPrincipal> claimsPrincipal, LazyService<ITopicEventSender> sender)
         {
             DbContext = dbContext;
             this.ClaimsPrincipal = claimsPrincipal;
