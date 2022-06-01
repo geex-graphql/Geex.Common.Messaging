@@ -15,7 +15,7 @@ namespace Geex.Common.Messaging.Api.Aggregates.FrontendCalls
         public FrontendCallType FrontendCallType { get; }
         public object Data { get; }
     }
-    public class FrontendCallType : Enumeration<FrontendCallType, string>
+    public class FrontendCallType : Enumeration<FrontendCallType>
     {
         protected FrontendCallType(string name, string value) : base(name, value)
         {
