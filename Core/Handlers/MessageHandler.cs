@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Security;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,7 +77,7 @@ namespace Geex.Common.Messaging.Core.Handlers
 
             foreach (var toUserId in request.ToUserIds)
             {
-                await Sender.Value.SendAsync<string, IFrontendCall>($"{nameof(MessageSubscription.OnFrontendCall)}:{toUserId}", new FrontendCall(FrontendCallType.NewMessage, new { message.Content, message.FromUserId, message.MessageType, message.Severity }), cancellationToken);
+                await Sender.Value.SendAsync<IFrontendCall>($"{nameof(MessageSubscription.OnFrontendCall)}:{toUserId}", new FrontendCall(FrontendCallType.NewMessage, JsonSerializer.SerializeToNode(new { message.Content, message.FromUserId, message.MessageType, message.Severity })), cancellationToken);
             }
 
             return Unit.Value;

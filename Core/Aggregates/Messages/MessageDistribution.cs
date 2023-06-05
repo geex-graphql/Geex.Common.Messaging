@@ -11,7 +11,7 @@ using Geex.Common.Abstractions;
 
 namespace Geex.Common.Messaging.Core.Aggregates.Messages
 {
-    public class MessageDistribution : Entity
+    public class MessageDistribution : Entity<MessageDistribution>
     {
         public MessageDistribution(string messageId, string toUserId)
         {

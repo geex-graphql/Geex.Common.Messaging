@@ -1,6 +1,7 @@
-using System.Security;
+ï»¿using System.Security;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using Geex.Common.Abstraction.Gql.Types;
 using Geex.Common.Abstractions;
 using Geex.Common.Messaging.Api.Aggregates.FrontendCalls;
@@ -18,7 +19,7 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
     public class MessageSubscription : SubscriptionExtension<MessageSubscription>
     {
         /// <summary>
-        /// ¶©ÔÄ·şÎñÆ÷¶Ôµ¥¸öÓÃ»§µÄÇ°¶Ëµ÷ÓÃ
+        /// è®¢é˜…æœåŠ¡å™¨å¯¹å•ä¸ªç”¨æˆ·çš„å‰ç«¯è°ƒç”¨
         /// </summary>
         /// <param name="receiver"></param>
         /// <param name="claimsPrincipal"></param>
@@ -26,27 +27,37 @@ namespace Geex.Common.Messaging.Api.GqlSchemas.Messages
         [SubscribeAndResolve]
         public ValueTask<ISourceStream<IFrontendCall>> OnFrontendCall([Service] ITopicEventReceiver receiver, [Service] LazyService<ClaimsPrincipal> claimsPrincipal)
         {
-            return receiver.SubscribeAsync<string, IFrontendCall>($"{nameof(OnFrontendCall)}:{claimsPrincipal.Value?.FindUserId()}");
+            return receiver.SubscribeAsync<IFrontendCall>($"{nameof(OnFrontendCall)}:{claimsPrincipal.Value?.FindUserId()}");
         }
 
         /// <summary>
-        /// ¶©ÔÄ¹ã²¥
+        /// è®¢é˜…å¹¿æ’­
         /// </summary>
         /// <param name="receiver"></param>
-        /// <param name="claimsPrincipal"></param>
         /// <returns></returns>
         [SubscribeAndResolve]
         public ValueTask<ISourceStream<IFrontendCall>> OnBroadcast([Service] ITopicEventReceiver receiver)
         {
-            return receiver.SubscribeAsync<string, IFrontendCall>(nameof(OnBroadcast));
+            return receiver.SubscribeAsync<IFrontendCall>(nameof(OnBroadcast));
         }
 
-        //public ValueTask<ISourceStream<IFrontendCall>> SubscribeToIFrontendCalls(
-        //[Service] ITopicEventReceiver receiver)
-        //=> receiver.SubscribeAsync<string, IFrontendCall>(nameof(OnBroadcast));
-
-        //[Subscribe(With = nameof(SubscribeToIFrontendCalls))]
-        //public IFrontendCall OnBroadcast([EventMessage] IFrontendCall book)
-        //    => book;
+        /// <summary>
+        /// æµ‹è¯•
+        /// </summary>
+        /// <returns></returns>
+        [SubscribeAndResolve]
+        public ValueTask<ISourceStream<string>> Echo(string text, [Service] ITopicEventReceiver receiver, [Service] ITopicEventSender sender)
+        {
+            Task.Run(async () =>
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    await Task.Delay(1000);
+                    await sender.SendAsync(nameof(Echo), text);
+                }
+                await sender.CompleteAsync(nameof(Echo));
+            });
+            return receiver.SubscribeAsync<string>(nameof(Echo));
+        }
     }
 }

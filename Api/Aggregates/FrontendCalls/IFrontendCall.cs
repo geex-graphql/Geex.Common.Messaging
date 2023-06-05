@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 using Geex.Common.Abstractions;
@@ -13,7 +14,7 @@ namespace Geex.Common.Messaging.Api.Aggregates.FrontendCalls
     public interface IFrontendCall
     {
         public FrontendCallType FrontendCallType { get; }
-        public object Data { get; }
+        public JsonNode? Data { get; }
     }
     public class FrontendCallType : Enumeration<FrontendCallType>
     {

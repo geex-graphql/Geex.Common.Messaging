@@ -4,19 +4,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Geex.Common.Abstraction.MultiTenant;
 using Geex.Common.Abstraction.Storage;
 using Geex.Common.Messaging.Api.Aggregates.Messages;
+
 using KuanFang.Rms.MessageManagement.Messages;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Geex.Common.Messaging.Core.Aggregates.Messages;
 
 /// <summary>
-///     普通message
+///     鏅�歮essage
 /// </summary>
-public class Message : Entity, IMessage
+public class Message : Entity<Message>, IMessage
 {
     protected Message()
     {
@@ -46,7 +49,7 @@ public class Message : Entity, IMessage
         DbContext.Queryable<MessageDistribution>().Where(x => x.MessageId == Id);
 
     private ILogger<Message> Logger => ServiceProvider.GetService<ILogger<Message>>();
-    public IMessageContent Content { get; private set;}
+    public IMessageContent Content { get; private set; }
     public string? FromUserId { get; private set; }
 
     public MessageType MessageType { get; set; }
@@ -67,7 +70,7 @@ public class Message : Entity, IMessage
     }
 
     /// <summary>
-    ///     标记当前消息针对特定用户已读
+    ///     鏍囪褰撳墠娑堟伅閽堝鐗瑰畾鐢ㄦ埛宸茶
     /// </summary>
     /// <param name="userId"></param>
     public void MarkAsRead(string userId)
@@ -76,10 +79,10 @@ public class Message : Entity, IMessage
         if (userDistribution != default)
             userDistribution.IsRead = true;
         else
-            Logger.LogWarning("试图标记不存在的消息分配记录已读.");
+            Logger.LogWarning("璇曞浘鏍囪涓嶅瓨鍦ㄧ殑娑堟伅鍒嗛厤璁板綍宸茶.");
     }
     public override async Task<ValidationResult> Validate(IServiceProvider sp, CancellationToken cancellation = default)
-        {
-            return ValidationResult.Success;
-        }
+    {
+        return ValidationResult.Success;
+    }
 }
